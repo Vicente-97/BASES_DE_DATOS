@@ -1,0 +1,82 @@
+CREATE TABLE BARCOS
+(matricula VARCHAR2 (7),
+nombre VARCHAR2 (20),
+clase VARCHAR2 (10),
+armador VARCHAR2 (10),
+capacidad NUMBER (20),
+nacionalidad VARCHAR2 (20),
+
+CONSTRAINT PK_BARCOS PRIMARY KEY (matricula),
+CONSTRAINT CH_BARCOS CHECK (regexp_like(matricula, '[A-Z]{2}[-]{1}[0-9]{4}'))
+);
+
+ALTER TABLE BARCOS DROP (armador);
+INSERT INTO BARCOS (nacionalidad) VALUES ('español');
+
+CREATE TABLE ESPECIE 
+(codigo VARCHAR2 (10),
+nombre VARCHAR2 (20),
+tipo VARCHAR2 (20),
+cupoporbarco NUMBER (20),
+caladero_principal VARCHAR2 (20),
+
+CONSTRAINT PK_ESPECIE PRIMARY KEY (codigo)
+);
+
+
+INSERT INTO ESPECIE (nombre) VALUES ('pez_espada');
+ALTER TABLE ESPECIE ADD CONSTRAINT FK_ESPECIE FOREIGN KEY (caladero_principal) REFERENCES CALADERO (codigo) ON DELETE SET NULL;
+
+
+
+
+CREATE TABLE CALADERO
+(codigo VARCHAR2 (10),
+nombre VARCHAR2 (20),
+ubicacion VARCHAR2 (20),
+especie_principal VARCHAR2 (20),
+
+
+CONSTRAINT FK_CALADERO FOREIGN KEY (especie_principal) REFERENCES ESPECIE (codigo) ON DELETE SET NULL,
+CONSTRAINT PK_CALADERO PRIMARY KEY (codigo),
+CONSTRAINT CH_CALADERO CHECK (nombre = UPPER(NOMBRE)),
+CONSTRAINT CH_CALADERO1 CHECK (ubicacion = UPPER(UBICACION))
+
+);
+
+ALTER TABLE CALADERO ADD nombre_cientifico VARCHAR2 (10);
+INSERT INTO CALADERO (nombre) VALUES ('pirata');
+
+CREATE TABLE LOTES
+(codigo VARCHAR2 (10),
+matricula VARCHAR2 (7),
+numkilos NUMBER (38),
+precioporkilosalida NUMBER (38),
+precioporkiloadjudicado NUMBER (38),
+fechaventa DATE NOT NULL,
+cod_especie VARCHAR2 (10),
+
+CONSTRAINT PK_LOTES PRIMARY KEY (codigo),
+CONSTRAINT FK_LOTES FOREIGN KEY (matricula) REFERENCES BARCOS (matricula) ON DELETE CASCADE,
+CONSTRAINT FK_LOTES2 FOREIGN KEY (cod_especie) REFERENCES ESPECIE (codigo) ON DELETE CASCADE,
+CONSTRAINT CH_LOTES CHECK (precioporkiloadjudicado > precioporkilosalida),
+CONSTRAINT CH_LOTES2 CHECK ((numkilos >0) AND (precioporkiloadjudicado >0) AND (precioporkilosalida >0))
+
+);
+
+CREATE TABLE FECHAS_CAPTURAS_PERMITIDAS
+(cod_especie VARCHAR2 (10),
+cod_caladero VARCHAR (10),
+fecha_inicial DATE,
+fecha_final DATE,
+
+CONSTRAINT PK_FECHAS_CAPTURAS_PERMITIDAS PRIMARY KEY (cod_especie),
+CONSTRAINT FK_FECHAS_CAPTURAS_PERMITIDAS1 FOREIGN KEY (cod_especie) REFERENCES ESPECIE (codigo),
+CONSTRAINT FK_FECHAS_CAPTURAS_PERMITIDAS2 FOREIGN KEY (cod_caladero) REFERENCES CALADERO (codigo),
+CONSTRAINT CH_FECHAS_CAPTURAS_PERMITIDAS3 CHECK  ((fecha_inicial>=to_date('02/02/2022', 'DD/MM/YYYY') AND (fecha_final<=to_date('28/03/2022', 'DD/MM/YYYY'))))
+);
+INSERT INTO FECHAS_CAPTURAS_PERMITIDAS (cod_especie) VALUES ('salon', 'atun');
+DROP DATABASE database_CALADERO2;
+
+
+

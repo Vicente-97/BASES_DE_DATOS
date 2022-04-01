@@ -1,0 +1,38 @@
+CREATE TABLE COMERCIAL
+(id INT (10),
+nombre VARCHAR (100),
+apellido1 VARCHAR (100),
+apellido2 VARCHAR (100),
+ciudad VARCHAR (100),
+comision FLOAT,
+
+CONSTRAINT PK_COMERCIAL PRIMARY KEY (id)
+
+
+);
+CREATE TABLE CLIENTE
+(id INT (10),
+nombre VARCHAR (100),
+apellido1 VARCHAR (100),
+apellido2 VARCHAR (100),
+ciudad VARCHAR (100),
+categoria INT (10),
+
+CONSTRAINT PK_CLIENTE PRIMARY KEY (id)
+
+);
+
+
+
+CREATE TABLE PEDIDO
+
+(id INT (10),
+cantidad INT,
+fecha DATE,
+id_cliente INT (10),
+id_comercial INT (10),
+
+CONSTRAINT PK_PEDIDO PRIMARY KEY (id),
+CONSTRAINT FK1_PEDIDO FOREIGN KEY (id_cliente) REFERENCES CLIENTE (id),
+CONSTRAINT FK2_PEDIDO FOREIGN KEY (id_comercial) REFERENCES COMERCIAL (id)
+);

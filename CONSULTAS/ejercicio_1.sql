@@ -1,0 +1,27 @@
+CREATE TABLE DEPARTAMENTO
+
+(
+codigo NUMBER (10),
+nombre VARCHAR2 (100),
+presupuesto NUMBER (4),
+
+CONSTRAINT PK_DEPARTAMENTO PRIMARY KEY (codigo)
+
+);
+
+
+
+
+
+CREATE TABLE EMPLEADO 
+(codigo NUMBER (10) NOT NULL,
+nif VARCHAR2 (9),
+nombre VARCHAR2 (100),
+apellido1 VARCHAR2 (100),
+apellido2 VARCHAR2 (100),
+codigo_departamento NUMBER (10),
+
+CONSTRAINT PK_EMPLEADO PRIMARY KEY (codigo),
+CONSTRAINT FK_EMPLEADO FOREIGN KEY (codigo_departamento) REFERENCES DEPARTAMENTO (codigo)
+
+);
